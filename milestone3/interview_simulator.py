@@ -16,8 +16,16 @@ from services.candidate_service import CandidateService
 from ui.components import page_header, empty_state
 from milestone3.interview_db import init_db, save_report
 
-_GROQ  = Groq(api_key=GROQ_API_KEY)
+_GROQ_CLIENT = None
 _TOTAL = 10
+
+
+def _groq():
+    global _GROQ_CLIENT
+    if _GROQ_CLIENT is None:
+        from config.settings import GROQ_API_KEY as _KEY
+        _GROQ_CLIENT = Groq(api_key=_KEY)
+    return _GROQ_CLIENT
 
 
 def _use_gemini() -> bool:
@@ -50,7 +58,7 @@ def _generate_question(candidate: dict, job: dict, history: list[dict], q_num: i
         f"Vary types: technical, behavioural, situational. No repeats. "
         f"Previous questions:\n{prev}\nReply with ONLY the question."
     )
-    resp = _GROQ.chat.completions.create(
+    resp = _groq().chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[{"role": "system", "content": system}],
         max_tokens=200,
@@ -98,13 +106,13 @@ def _evaluate(question: str, answer: str, job_title: str) -> dict:
             try:
                 raw = _gemini_generate(prompt)
             except Exception:
-                raw = _GROQ.chat.completions.create(
+                raw = _groq().chat.completions.create(
                     model="llama-3.3-70b-versatile",
                     messages=[{"role": "user", "content": prompt}],
                     max_tokens=600,
                 ).choices[0].message.content.strip()
         else:
-            raw = _GROQ.chat.completions.create(
+            raw = _groq().chat.completions.create(
                 model="llama-3.3-70b-versatile",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=600,

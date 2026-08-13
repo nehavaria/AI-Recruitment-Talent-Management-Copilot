@@ -13,11 +13,11 @@ from services.candidate_service import CandidateService
 from ui.components import page_header, empty_state
 
 
-# ── Groq client (lazy, cached) ─────────────────────────────────────────────
+# ── Groq client (lazy, always reads fresh key) ────────────────────────────
 
-@st.cache_resource
 def _groq_client():
-    return Groq(api_key=GROQ_API_KEY)
+    from config.settings import GROQ_API_KEY as _KEY
+    return Groq(api_key=_KEY)
 
 
 # ── Groq generation ────────────────────────────────────────────────────────
