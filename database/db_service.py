@@ -68,6 +68,10 @@ class DatabaseService:
         - Returns FAILED (with error list) on validation failure or DB error.
         """
         email = profile.email.strip().lower()
+        # Fallback: use filename stem as name if extractor returned empty
+        if not profile.name or not profile.name.strip():
+            stem = resume_path.replace("\\", "/").split("/")[-1].rsplit(".", 1)[0]
+            profile.name = stem.replace("_", " ").replace("-", " ").title() or "Unknown"
         logger.info("save_profile › start  email=%s  resume=%s", email, resume_path or "—")
 
         errors = self._validate(profile)
