@@ -21,17 +21,14 @@ logger = logging.getLogger(__name__)
 _DDL = """
 CREATE TABLE IF NOT EXISTS candidate_users (
     id             INT          NOT NULL AUTO_INCREMENT,
-    candidate_id   INT          NOT NULL,
+    candidate_id   INT          NOT NULL DEFAULT 0,
     name           VARCHAR(255) NOT NULL,
     email          VARCHAR(255) NOT NULL,
     password_hash  VARCHAR(255) NOT NULL,
     account_status VARCHAR(20)  NOT NULL DEFAULT 'active',
     created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE KEY uq_email (email),
-    CONSTRAINT fk_cu_candidate
-        FOREIGN KEY (candidate_id) REFERENCES candidates (candidate_id)
-        ON DELETE CASCADE ON UPDATE CASCADE
+    UNIQUE KEY uq_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 """
 
