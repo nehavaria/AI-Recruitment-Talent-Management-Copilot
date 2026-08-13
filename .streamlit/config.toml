@@ -1,2 +1,14 @@
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = true
+maxUploadSize = 10
+
 [ui]
 hideSidebarNav = true
+
+[theme]
+base = "dark"
+
+[logger]
+level = "info"

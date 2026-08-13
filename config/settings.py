@@ -16,19 +16,28 @@ LOG_PATH   = DATA_DIR / "app.log"
 DATA_DIR.mkdir(exist_ok=True)
 UPLOAD_DIR.mkdir(exist_ok=True)
 
+# ── Environment ────────────────────────────────────────────────────────────
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")  # development | production
+IS_PROD     = ENVIRONMENT == "production"
+
 # ── App metadata ───────────────────────────────────────────────────────────
 APP_TITLE = "AI Recruitment & Talent Management Copilot"
 APP_ICON  = "🤖"
 
 # ──────────────────────────────────────────────────────────────────────────
-#  MySQL Configuration  (values loaded from .env)
+#  MySQL Configuration  (values loaded from .env / platform secrets)
 # ──────────────────────────────────────────────────────────────────────────
 MYSQL_HOST     = os.getenv("MYSQL_HOST",     "localhost")
 MYSQL_PORT     = int(os.getenv("MYSQL_PORT", "3306"))
 MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "myrecruitment")
 MYSQL_USER     = os.getenv("MYSQL_USER",     "root")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "")
+MYSQL_SSL_CA   = os.getenv("MYSQL_SSL_CA",   "")  # path to CA cert for cloud MySQL
 # ──────────────────────────────────────────────────────────────────────────
+
+# ── CORS (comma-separated list of allowed origins) ─────────────────────────
+_raw_origins    = os.getenv("ALLOWED_ORIGINS", "http://localhost:8501")
+ALLOWED_ORIGINS = [o.strip() for o in _raw_origins.split(",") if o.strip()]
 
 # ── Gemini API ────────────────────────────────────────────────────────────
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")

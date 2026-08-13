@@ -12,6 +12,7 @@ from config.settings import (
     MYSQL_PASSWORD,
     MYSQL_PORT,
     MYSQL_USER,
+    MYSQL_SSL_CA,
 )
 
 logger = logging.getLogger(__name__)
@@ -80,6 +81,10 @@ class DatabaseManager:
             "collation":         "utf8mb4_unicode_ci",
             "raise_on_warnings": False,
         }
+        # SSL for cloud-hosted MySQL (PlanetScale, Railway, Aiven, etc.)
+        if MYSQL_SSL_CA:
+            self._config["ssl_ca"] = MYSQL_SSL_CA
+            self._config["ssl_verify_cert"] = True
         self._init_schema()
 
     # ── Connection ─────────────────────────────────────────────────────────
