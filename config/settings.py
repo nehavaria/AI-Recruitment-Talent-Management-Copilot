@@ -7,6 +7,15 @@ from dotenv import load_dotenv
 
 load_dotenv()  # loads .env from project root
 
+# Merge Streamlit secrets into os.environ so all os.getenv() calls work
+try:
+    import streamlit as st
+    for _k, _v in st.secrets.items():
+        if isinstance(_v, str):
+            os.environ.setdefault(_k, _v)
+except Exception:
+    pass
+
 # ── Paths ──────────────────────────────────────────────────────────────────
 BASE_DIR   = Path(__file__).resolve().parent.parent
 DATA_DIR   = BASE_DIR / "data"
@@ -32,6 +41,7 @@ MYSQL_PORT     = int(os.getenv("MYSQL_PORT", "3306"))
 MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "myrecruitment")
 MYSQL_USER     = os.getenv("MYSQL_USER",     "root")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "")
+GROQ_API_KEY   = os.getenv("GROQ_API_KEY",   "")
 MYSQL_SSL_CA   = os.getenv("MYSQL_SSL_CA",   "")  # path to CA cert for cloud MySQL
 # ──────────────────────────────────────────────────────────────────────────
 
