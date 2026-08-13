@@ -318,9 +318,7 @@ def _chart_skills_pie(counter: Counter, top_n: int = 12) -> go.Figure:
     fig = go.Figure(go.Pie(
         labels=labels, values=values,
         hole=0.45,
-        textinfo="percent",
-        textposition="inside",
-        textfont=dict(color="#ffffff", size=11),
+        textinfo="none",
         hovertemplate="<b>%{label}</b><br>Count: %{value}<br>Share: %{percent}<extra></extra>",
         marker=dict(line=dict(color="rgba(0,0,0,0.25)", width=2)),
         showlegend=True,
