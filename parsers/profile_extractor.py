@@ -66,12 +66,13 @@ class ProfileExtractor:
         try:
             self._nlp = spacy.load(SPACY_MODEL)
         except OSError:
-            logger.warning(
-                "spaCy model '%s' not found — NER disabled. "
-                "Run: python -m spacy download %s",
-                SPACY_MODEL, SPACY_MODEL,
-            )
-            self._nlp = None
+            try:
+                from spacy.cli import download as spacy_download
+                spacy_download(SPACY_MODEL)
+                self._nlp = spacy.load(SPACY_MODEL)
+            except Exception:
+                logger.warning("spaCy model '%s' not found — NER disabled.", SPACY_MODEL)
+                self._nlp = None
 
     def extract(self, text: str) -> CandidateProfile:
         """Return a CandidateProfile populated from raw resume text."""
