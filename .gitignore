@@ -7,6 +7,7 @@
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyc
 .venv/
 venv/
 env/
@@ -14,6 +15,7 @@ env/
 # Data / uploads
 data/uploads/
 data/*.log
+data/app.log
 *.db
 
 # IDE
