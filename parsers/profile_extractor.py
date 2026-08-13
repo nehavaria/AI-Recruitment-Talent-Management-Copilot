@@ -84,6 +84,8 @@ class ProfileExtractor:
             doc = self._nlp(text[:5000])   # cap for performance
             profile.name     = self._extract_name(doc)
             profile.location = self._extract_location(doc)
+        else:
+            profile.name = self._extract_name_fallback(text)
 
         sections = self._split_sections(text)
         profile.summary = sections.get(
@@ -114,6 +116,25 @@ class ProfileExtractor:
     def _extract_skills(self, text: str) -> list[str]:
         lower = text.lower()
         return sorted({s for s in KNOWN_SKILLS if re.search(rf"\b{re.escape(s)}\b", lower)})
+
+    def _extract_name_fallback(self, text: str) -> str:
+        """Extract name without spaCy — first short line with no digits/email."""
+        for line in text.splitlines():
+            line = line.strip()
+            if (
+                line
+                and 1 < len(line.split()) <= 5
+                and not _EMAIL_RE.search(line)
+                and not re.search(r"\d", line)
+                and not re.search(
+                    r"(engineer|developer|analyst|manager|intern|contact|summary|"
+                    r"profile|objective|skills|education|experience|projects|"
+                    r"resume|curriculum|vitae|address|phone|email|linkedin)",
+                    line, re.IGNORECASE
+                )
+            ):
+                return line
+        return ""
 
     def _extract_name(self, doc: Any) -> str:
         # Try spaCy PERSON entity — take first line only (guards multi-line matches)
