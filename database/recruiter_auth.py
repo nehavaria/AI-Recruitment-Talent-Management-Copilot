@@ -9,7 +9,7 @@ from typing import Generator
 import mysql.connector
 
 from config.settings import (
-    MYSQL_DATABASE, MYSQL_HOST, MYSQL_PASSWORD, MYSQL_PORT, MYSQL_USER,
+    MYSQL_DATABASE, MYSQL_HOST, MYSQL_PASSWORD, MYSQL_PORT, MYSQL_SSL_CA, MYSQL_USER,
 )
 
 logger = logging.getLogger(__name__)
@@ -32,11 +32,13 @@ _schema_ready = False
 
 @contextmanager
 def _connect() -> Generator[mysql.connector.MySQLConnection, None, None]:
+    ssl_args = {"ssl_ca": MYSQL_SSL_CA, "ssl_verify_cert": True} if MYSQL_SSL_CA else {}
     conn = mysql.connector.connect(
         host=MYSQL_HOST, port=MYSQL_PORT, database=MYSQL_DATABASE,
         user=MYSQL_USER, password=MYSQL_PASSWORD,
         autocommit=False, charset="utf8mb4",
         collation="utf8mb4_unicode_ci", raise_on_warnings=False,
+        connection_timeout=10, **ssl_args,
     )
     try:
         yield conn
