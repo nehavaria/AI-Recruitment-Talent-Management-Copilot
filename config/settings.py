@@ -5,16 +5,16 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()  # loads .env from project root
-
-# Merge Streamlit secrets into os.environ so all os.getenv() calls work
+# Merge Streamlit secrets into os.environ FIRST so they take priority over .env
 try:
     import streamlit as st
     for _k, _v in st.secrets.items():
         if isinstance(_v, str):
-            os.environ.setdefault(_k, _v)
+            os.environ[_k] = _v
 except Exception:
     pass
+
+load_dotenv()  # loads .env from project root (only fills gaps not already set)
 
 # ── Paths ──────────────────────────────────────────────────────────────────
 BASE_DIR   = Path(__file__).resolve().parent.parent
